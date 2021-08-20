@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{DDE2A481-8271-4EAC-A330-8FA6A38D13D1}</ProjectGuid>
+    <ProjectGuid>{9BBE96A8-5C48-4B1E-B7E0-E0F2AD0A7D2E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ICSharpCode.TreeView</RootNamespace>
