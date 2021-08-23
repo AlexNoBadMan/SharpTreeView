@@ -317,8 +317,7 @@
     </Style>
 
     <Style TargetType="{x:Type Default:SharpTreeNodeView}">
-        <Setter Property="Focusable"
-                Value="False" />
+        <Setter Property="Focusable" Value="False" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Default:SharpTreeNodeView}">
@@ -327,17 +326,11 @@
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Default:LinesRenderer x:Name="linesRenderer"
-                                               ClipToBounds="False"
-                                               SnapsToDevicePixels="False"
+                        <Default:LinesRenderer x:Name="linesRenderer" ClipToBounds="False" SnapsToDevicePixels="False"
                                                Visibility="{Binding ShowLines, RelativeSource={RelativeSource AncestorType={x:Type Default:SharpTreeView}}, Converter={Default:CollapsedWhenFalse}}" />
                         <StackPanel Orientation="Horizontal">
                             <FrameworkElement Name="spacer" />
-                            <ToggleButton Name="expander"
-                                          IsChecked="{Binding IsExpanded}"
-                                          Visibility="Hidden"
-                                          Margin="0 0 7 0"
-                                          VerticalAlignment="Center" >
+                            <ToggleButton Name="expander" Margin="0 0 7 0" IsChecked="{Binding IsExpanded}" Visibility="Hidden" VerticalAlignment="Center" >
                                 <ToggleButton.Style>
                                     <Style TargetType="{x:Type ToggleButton}">
                                         <Setter Property="Focusable" Value="False" />
@@ -347,46 +340,26 @@
                                                 <Setter Property="Template" Value="{StaticResource ControlTemplateExpandCollapseToggleStyle}"></Setter>
                                             </DataTrigger>
                                         </Style.Triggers>
-                                        
                                     </Style>
                                 </ToggleButton.Style>
                             </ToggleButton>
-                            <Border Name="checkBoxContainer"
-                                    Width="16"
-                                    Margin="0 0 3 0"
-                                    Visibility="Collapsed">
-                                <CheckBox IsChecked="{Binding IsChecked}"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center" />
+                            <Border Name="checkBoxContainer" Margin="0 0 3 0" Width="16" Visibility="Collapsed">
+                                <CheckBox IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
-                            <!--<StackPanel Orientation="Horizontal"
-                                        Background="Transparent"
-                                        ToolTip="{Binding ToolTip}">-->
-                            <ContentPresenter Name="icon"
-                                                  Content="{Binding Icon}"
-                                                  Height="18"
-                                                  Width="18"
-                                                  Margin="0 0 5 1"
-                                                  VerticalAlignment="Center"
-                                                  Focusable="False" SnapsToDevicePixels="True">
+                            <ContentPresenter Name="icon" Margin="0 0 6 1" Content="{Binding Icon}" Height="18" Width="18"
+                                                  VerticalAlignment="Center" HorizontalAlignment="Center" Focusable="False" SnapsToDevicePixels="True">
                                 <ContentPresenter.ContentTemplate>
                                     <DataTemplate>
-                                        <Image SnapsToDevicePixels="True" Stretch="None" Source="{Binding}"/>
+                                        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" VerticalAlignment="Center" HorizontalAlignment="Center" SnapsToDevicePixels="True" Stretch="None" Source="{Binding}"/>
                                     </DataTemplate>
                                 </ContentPresenter.ContentTemplate>
                             </ContentPresenter>
-
-                            <!--</StackPanel>-->
                         </StackPanel>
-                        <Border Grid.Column="1" Name="textContainer"
-                                        Background="{TemplateBinding TextBackground}">
-                            <ContentPresenter Content="{Binding Text}"
-                                                      VerticalAlignment="Center"
-                                                      Focusable="False">
+                        <Border Grid.Column="1" Name="textContainer" Background="{TemplateBinding TextBackground}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                            <ContentPresenter Content="{Binding Text}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Focusable="False">
                                 <ContentPresenter.Resources>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                                        <!--<Setter Property="ToolTip" Value="{Binding ToolTip}"/>-->
                                     </Style>
                                 </ContentPresenter.Resources>
                             </ContentPresenter>
@@ -394,41 +367,23 @@
                         <Border Grid.Column="1" Name="textEditorContainer" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding IsEditing}"
-                                     Value="True">
-                            <Setter TargetName="textContainer"
-                                    Property="Visibility"
-                                    Value="Collapsed" />
+                        <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                            <Setter TargetName="textContainer" Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
-                    	  <DataTrigger Binding="{Binding ShowIcon}"
-                                     Value="False">
-                    		  <Setter TargetName="icon"
-                                    Property="Visibility"
-                                   Value="Collapsed" />
+                    	  <DataTrigger Binding="{Binding ShowIcon}" Value="False">
+                    		  <Setter TargetName="icon" Property="Visibility" Value="Collapsed" />
  						  </DataTrigger>
-                        <DataTrigger Binding="{Binding IsExpanded}"
-                                     Value="True">
-                            <Setter TargetName="icon"
-                                    Property="Content"
-                                    Value="{Binding ExpandedIcon}" />
+                        <DataTrigger Binding="{Binding IsExpanded}" Value="True">
+                            <Setter TargetName="icon" Property="Content" Value="{Binding ExpandedIcon}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ShowExpander}"
-                                     Value="True">
-                            <Setter TargetName="expander"
-                                    Property="Visibility"
-                                    Value="Visible" />
+                        <DataTrigger Binding="{Binding ShowExpander}"  Value="True">
+                            <Setter TargetName="expander" Property="Visibility" Value="Visible" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsCheckable}"
-                                     Value="True">
-                            <Setter TargetName="checkBoxContainer"
-                                    Property="Visibility"
-                                    Value="Visible" />
+                        <DataTrigger Binding="{Binding IsCheckable}" Value="True">
+                            <Setter TargetName="checkBoxContainer" Property="Visibility" Value="Visible" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsCut}"
-                                     Value="True">
-                            <Setter TargetName="icon"
-                                    Property="Opacity"
-                                    Value="0.5" />
+                        <DataTrigger Binding="{Binding IsCut}" Value="True">
+                            <Setter TargetName="icon" Property="Opacity" Value="0.5" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
