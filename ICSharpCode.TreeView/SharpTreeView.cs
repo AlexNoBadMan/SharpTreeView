@@ -232,22 +232,35 @@ namespace ICSharpCode.TreeView
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			SharpTreeViewItem container = e.OriginalSource as SharpTreeViewItem;
-			switch (e.Key) {
+			switch (e.Key) 
+			{
 				case Key.Left:
-					if (container != null && ItemsControl.ItemsControlFromItemContainer(container) == this) {
-						if (container.Node.IsExpanded) {
-							container.Node.IsExpanded = false;
-						} else if (container.Node.Parent != null) {
-							this.FocusNode(container.Node.Parent);
-						}
-						e.Handled = true;
-					}
-					break;
+					if (container != null && ItemsControl.ItemsControlFromItemContainer(container) == this)
+                    {
+                        if (!ShowRootExpander && container.Node.IsRoot)
+                            break;
+
+                        if (container.Node.IsExpanded)
+                        {
+                            container.Node.IsExpanded = false;
+                        }
+                        else if (container.Node.Parent != null)
+                        {
+                            this.FocusNode(container.Node.Parent);
+                        }
+                        e.Handled = true;
+                        break;
+                    }
+                    break;
 				case Key.Right:
-					if (container != null && ItemsControl.ItemsControlFromItemContainer(container) == this) {
-						if (!container.Node.IsExpanded && container.Node.ShowExpander) {
+					if (container != null && ItemsControl.ItemsControlFromItemContainer(container) == this) 
+					{
+						if (!container.Node.IsExpanded && container.Node.ShowExpander) 
+						{
 							container.Node.IsExpanded = true;
-						} else if (container.Node.Children.Count > 0) {
+						} 
+						else if (container.Node.Children.Count > 0) 
+						{
 							// jump to first child:
 							container.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
 						}
@@ -255,38 +268,46 @@ namespace ICSharpCode.TreeView
 					}
 					break;
 				case Key.Return:
-					if (container != null && Keyboard.Modifiers == ModifierKeys.None && this.SelectedItems.Count == 1 && this.SelectedItem == container.Node) {
+					if (container != null && Keyboard.Modifiers == ModifierKeys.None && this.SelectedItems.Count == 1 && this.SelectedItem == container.Node) 
+					{
 						e.Handled = true;
 						container.Node.ActivateItem(e);
 					}
 					break;
 				case Key.Space:
-					if (container != null && Keyboard.Modifiers == ModifierKeys.None && this.SelectedItems.Count == 1 && this.SelectedItem == container.Node) {
+					if (container != null && Keyboard.Modifiers == ModifierKeys.None && this.SelectedItems.Count == 1 && this.SelectedItem == container.Node) 
+					{
 						e.Handled = true;
-						if (container.Node.IsCheckable) {
+						if (container.Node.IsCheckable) 
+						{
 							if(container.Node.IsChecked == null) // If partially selected, we want to select everything
 								container.Node.IsChecked = true;
 							else
 								container.Node.IsChecked = !container.Node.IsChecked;
-						} else {
+						} 
+						else 
+						{
 							container.Node.ActivateItem(e);
 						}
 					}
 					break;
 				case Key.Add:
-					if (container != null && ItemsControl.ItemsControlFromItemContainer(container) == this) {
+					if (container != null && ItemsControl.ItemsControlFromItemContainer(container) == this) 
+					{
 						container.Node.IsExpanded = true;
 						e.Handled = true;
 					}
 					break;
 				case Key.Subtract:
-					if (container != null && ItemsControl.ItemsControlFromItemContainer(container) == this) {
+					if (container != null && ItemsControl.ItemsControlFromItemContainer(container) == this) 
+					{
 						container.Node.IsExpanded = false;
 						e.Handled = true;
 					}
 					break;
 				case Key.Multiply:
-					if (container != null && ItemsControl.ItemsControlFromItemContainer(container) == this) {
+					if (container != null && ItemsControl.ItemsControlFromItemContainer(container) == this) 
+					{
 						container.Node.IsExpanded = true;
 						ExpandRecursively(container.Node);
 						e.Handled = true;
