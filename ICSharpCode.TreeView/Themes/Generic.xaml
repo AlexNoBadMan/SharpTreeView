@@ -3,9 +3,10 @@
                     xmlns:Default="clr-namespace:ICSharpCode.TreeView">
 
     <SolidColorBrush x:Key="ListBorder" Color="#FF7F9DB9" />
+    <SolidColorBrush x:Key="ItemsviewEdit.Background" Color="#2D26AADA"/>
     <SolidColorBrush x:Key="ItemsviewHover.Background" Color="#1F26A0DA"/>
     <SolidColorBrush x:Key="ItemsviewSelected.Background" Color="#3D26A0DA"/>
-    <SolidColorBrush x:Key="ItemsviewSelectedHover.Background" Color="#8526A0DA"/>
+    <SolidColorBrush x:Key="ItemsviewSelectedHover.Background" Color="#6B26A0DA"/>
 
     <ControlTemplate x:Key="DefaultControlTemplateExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
         <Border Width="9"
@@ -194,7 +195,7 @@
         </Setter>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                <ControlTemplate TargetType="{x:Type Default:SharpTreeViewItem}">
                     <Border Name="Bd"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
@@ -205,19 +206,6 @@
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </Border>
                     <ControlTemplate.Triggers>
-                        <!--<Trigger Property="IsSelected" Value="true">
-                            <Setter TargetName="Bd" Property="Background" Value="#A826A0DA" />
-                        </Trigger>
-						<Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="#A885DEFF" />
-                        </Trigger>
-						<MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="true" />
-                                <Condition Property="IsMouseOver" Value="true" />
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="Bd" Property="Background" Value="#2E0080FF" />
-                        </MultiTrigger>-->
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsSelected" Value="False"/>
@@ -239,7 +227,6 @@
                             </MultiTrigger.Conditions>
                             <Setter Property="Background" TargetName="Bd" Value="{StaticResource ItemsviewSelectedHover.Background}"/>
                         </MultiTrigger>
-
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsSelected" Value="true" />
@@ -248,6 +235,9 @@
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
                         </MultiTrigger>
+                        <DataTrigger Binding="{Binding Node.IsEditing, RelativeSource={RelativeSource Self}}"  Value="True">
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource ItemsviewEdit.Background}"/>
+                        </DataTrigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>

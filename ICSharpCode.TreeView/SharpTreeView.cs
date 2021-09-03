@@ -313,6 +313,12 @@ namespace ICSharpCode.TreeView
 						e.Handled = true;
 					}
 					break;
+				//case Key.Tab:
+				//	if (container != null && Keyboard.Modifiers == ModifierKeys.Shift && SelectionMode != SelectionMode.Single)
+				//	{
+				//		UnselectAll();
+				//	}
+				//	break;
 			}
 			if (!e.Handled)
 				base.OnKeyDown(e);
@@ -337,9 +343,12 @@ namespace ICSharpCode.TreeView
 				throw new ArgumentNullException("node");
 			ScrollIntoView(node);
 			// WPF's ScrollIntoView() uses the same if/dispatcher construct, so we call OnFocusItem() after the item was brought into view.
-			if (this.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated) {
+			if (this.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated) 
+			{
 				OnFocusItem(node);
-			} else {
+			} 
+			else 
+			{
 				this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new DispatcherOperationCallback(this.OnFocusItem), node);
 			}
 		}

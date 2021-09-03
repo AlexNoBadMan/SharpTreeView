@@ -108,18 +108,25 @@ namespace ICSharpCode.TreeView
 
 		void Node_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == "IsEditing") {
+			if (e.PropertyName == "IsEditing") 
+			{
 				OnIsEditingChanged();
-			} else if (e.PropertyName == "IsLast") {
-				if (ParentTreeView.ShowLines) {
-					foreach (var child in Node.VisibleDescendantsAndSelf()) {
+			} 
+			else if (e.PropertyName == "IsLast") 
+			{
+				if (ParentTreeView.ShowLines) 
+				{
+					foreach (var child in Node.VisibleDescendantsAndSelf()) 
+					{
 						var container = ParentTreeView.ItemContainerGenerator.ContainerFromItem(child) as SharpTreeViewItem;
 						if (container != null) {
 							container.NodeView.LinesRenderer.InvalidateVisual();
 						}
 					}
 				}
-			} else if (e.PropertyName == "IsExpanded") {
+			} 
+			else if (e.PropertyName == "IsExpanded") 
+			{
 				if (Node.IsExpanded)
 					ParentTreeView.HandleExpanding(Node);
 			}
@@ -127,6 +134,9 @@ namespace ICSharpCode.TreeView
 
 		void OnIsEditingChanged()
 		{
+			if (!Node.IsEditable)
+				return;
+
 			var textEditorContainer = Template.FindName("textEditorContainer", this) as Border;
 			if (Node.IsEditing) {
 				if (CellEditor == null)
