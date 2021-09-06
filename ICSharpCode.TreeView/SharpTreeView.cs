@@ -568,20 +568,7 @@ namespace ICSharpCode.TreeView
             return dragItems.Any(dragItem => 
 								 dragItem == targetNode || // Попытка добавить/переместить узел в самого себя
 								 (!allowDropOrder && dragItem.Parent == targetNode) || //Попытка добавить/переместить в текущего родителя, т.е. в туже самую папку
-								 CheckInParent(targetNode, dragItem)); //Попытка добавить/переместить родительский узел в дочерний
-        }
-
-        private static bool CheckInParent(SharpTreeNode targetNode, SharpTreeNode dragItem)
-        {
-			if (targetNode.Parent == null)
-				return false;
-
-            bool parentToChild;
-            if (targetNode.Parent == dragItem)
-                return true;
-            else
-                parentToChild = CheckInParent(targetNode.Parent, dragItem);
-            return parentToChild;
+								 targetNode.Ancestors().Any(x => x == dragItem)); //Попытка добавить/переместить родительский узел в дочерний
         }
 
         private void GetNodeAndIndex(SharpTreeViewItem item, DropPlace place, out SharpTreeNode node, out int index)
