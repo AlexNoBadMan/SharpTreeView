@@ -166,16 +166,6 @@ namespace ICSharpCode.TreeView
 			{
 				expander.ClearValue(VisibilityProperty);
 			}
-			/*var spacer = Template.FindName("spacer", this) as FrameworkElement;
-			spacer.Width = CalculateIndent();
-
-			var expander = Template.FindName("expander", this) as ToggleButton;
-			if (ParentTreeView.Root == Node && !ParentTreeView.ShowRootExpander) {
-				expander.Visibility = Visibility.Collapsed;
-			}
-			else {
-				expander.ClearValue(VisibilityProperty);
-			}*/
 		}
 
 		internal double CalculateIndent(SharpTreeNode node)

@@ -313,12 +313,6 @@ namespace ICSharpCode.TreeView
 						e.Handled = true;
 					}
 					break;
-				//case Key.Tab:
-				//	if (container != null && Keyboard.Modifiers == ModifierKeys.Shift && SelectionMode != SelectionMode.Single)
-				//	{
-				//		UnselectAll();
-				//	}
-				//	break;
 			}
 			if (!e.Handled)
 				base.OnKeyDown(e);
@@ -398,7 +392,7 @@ namespace ICSharpCode.TreeView
         {
             e.Effects = DragDropEffects.None;
 
-            if (Root != null && !ShowRoot)
+            if (Root != null /*&& !ShowRoot*/)
             {
                 e.Handled = true;
                 e.Effects = Root.GetDropEffect(e, Root.Children.Count);
@@ -409,7 +403,7 @@ namespace ICSharpCode.TreeView
         {
             e.Effects = DragDropEffects.None;
 
-            if (Root != null && !ShowRoot)
+            if (Root != null /*&& !ShowRoot*/)
             {
                 e.Handled = true;
                 e.Effects = Root.GetDropEffect(e, Root.Children.Count);
@@ -485,46 +479,57 @@ namespace ICSharpCode.TreeView
 		{
 			var result = new List<DropTarget>();
 			var node = item.Node;
-
-			if (AllowDropOrder) {
-				TryAddDropTarget(result, item, DropPlace.Before, e);
-			}
-
-			TryAddDropTarget(result, item, DropPlace.Inside, e);
-
-			if (AllowDropOrder) {
-				if (node.IsExpanded && node.Children.Count > 0) {
-					var firstChildItem = ItemContainerGenerator.ContainerFromItem(node.Children[0]) as SharpTreeViewItem;
-					TryAddDropTarget(result, firstChildItem, DropPlace.Before, e);
-				}
-				else {
-					TryAddDropTarget(result, item, DropPlace.After, e);
-				}
-			}
-
 			var h = item.ActualHeight;
 			var y1 = 0.2 * h;
 			var y2 = h / 2;
 			var y3 = h - y1;
+			var posY = e.GetPosition(item).Y;
+			if (posY > y1 && posY < y3)
+            {
+				TryAddDropTarget(result, item, DropPlace.Inside, e);
+			}
+			else if (AllowDropOrder)
+            {
+                if (posY <= y1)
+                {
+					TryAddDropTarget(result, item, DropPlace.Before, e);
+				}
+                else
+				{
+					if (node.IsExpanded && node.Children.Count > 0)
+					{
+						var firstChildItem = ItemContainerGenerator.ContainerFromItem(node.Children[0]) as SharpTreeViewItem;
+						TryAddDropTarget(result, firstChildItem, DropPlace.Before, e);
+					}
+					else
+					{
+						TryAddDropTarget(result, item, DropPlace.After, e);
+					}
+				}
+			}
 
-			if (result.Count == 2) {
-				if (result[0].Place == DropPlace.Inside &&
-				    result[1].Place != DropPlace.Inside) {
+			if (result.Count == 2) 
+			{
+				if (result[0].Place == DropPlace.Inside && result[1].Place != DropPlace.Inside) 
+				{
 					result[0].Y = y3;
 				}
-				else if (result[0].Place != DropPlace.Inside &&
-				         result[1].Place == DropPlace.Inside) {
+				else if (result[0].Place != DropPlace.Inside && result[1].Place == DropPlace.Inside) 
+				{
 					result[0].Y = y1;
 				}
-				else {
+				else 
+				{
 					result[0].Y = y2;
 				}
 			}
-			else if (result.Count == 3) {
+			else if (result.Count == 3) 
+			{
 				result[0].Y = y1;
 				result[1].Y = y3;
 			}
-			if (result.Count > 0) {
+			if (result.Count > 0) 
+			{
 				result[result.Count - 1].Y = h;
 			}
 			return result;
@@ -532,32 +537,37 @@ namespace ICSharpCode.TreeView
 
         private void TryAddDropTarget(List<DropTarget> targets, SharpTreeViewItem item, DropPlace place, DragEventArgs e)
 		{
-            GetNodeAndIndex(item, place, out var targetNode, out var index);
+			GetNodeAndIndex(item, place, out var targetNode, out var index);
 
 			if (targetNode != null)
-            {
-                var dragItems = SelectedItems.OfType<SharpTreeNode>();
-                var effect = CheckOnCurrentItem(dragItems, targetNode) ? DragDropEffects.None : targetNode.GetDropEffect(e, index);
-                if (effect != DragDropEffects.None)
-                {
-                    var target = new DropTarget()
-                    {
-                        Item = item,
-                        Place = place,
-                        Node = targetNode,
-                        Index = index,
-                        Effect = effect
-                    };
-                    targets.Add(target);
-                }
-            }
-        }
+			{
+				var dragItems = SelectedItems.OfType<SharpTreeNode>();
+				var effect = CheckOnCurrentItem(dragItems, targetNode, AllowDropOrder) ? DragDropEffects.None : targetNode.GetDropEffect(e, index);
+				if (effect == DragDropEffects.Move && SelectedItem is SharpTreeNode node && node.Parent == targetNode)
+				{
+					var currentIndex = item.Node.Parent.Children.IndexOf(node);
+					if (index == currentIndex || index == currentIndex + 1)
+						return;
+				}
+				if (effect != DragDropEffects.None)
+				{
+					targets.Add(new DropTarget()
+					{
+						Item = item,
+						Place = place,
+						Node = targetNode,
+						Index = index,
+						Effect = effect
+					});
+				}
+			}
+		}
 
-        private static bool CheckOnCurrentItem(IEnumerable<SharpTreeNode> dragItems, SharpTreeNode targetNode)
+        private static bool CheckOnCurrentItem(IEnumerable<SharpTreeNode> dragItems, SharpTreeNode targetNode, bool allowDropOrder)
         {
             return dragItems.Any(dragItem => 
 								 dragItem == targetNode || // Попытка добавить/переместить узел в самого себя
-								 dragItem.Parent == targetNode || //Попытка добавить/переместить в текущего родителя, т.е. в туже самую папку
+								 (!allowDropOrder && dragItem.Parent == targetNode) || //Попытка добавить/переместить в текущего родителя, т.е. в туже самую папку
 								 CheckInParent(targetNode, dragItem)); //Попытка добавить/переместить родительский узел в дочерний
         }
 
@@ -579,18 +589,23 @@ namespace ICSharpCode.TreeView
 			node = null;
 			index = 0;
 
-			if (place == DropPlace.Inside) {
+			if (place == DropPlace.Inside) 
+			{
 				node = item.Node;
 				index = node.Children.Count;
 			}
-			else if (place == DropPlace.Before) {
-				if (item.Node.Parent != null) {
+			else if (place == DropPlace.Before)
+			{
+				if (item.Node.Parent != null)
+				{
 					node = item.Node.Parent;
 					index = node.Children.IndexOf(item.Node);
 				}
 			}
-			else {
-				if (item.Node.Parent != null) {
+			else
+			{
+				if (item.Node.Parent != null)
+				{
 					node = item.Node.Parent;
 					index = node.Children.IndexOf(item.Node) + 1;
 				}
@@ -631,53 +646,28 @@ namespace ICSharpCode.TreeView
 					adorner.Child = _insertMarker;
 					adornerLayer.Add(adorner);
 				}
-
 				_insertMarker.Visibility = Visibility.Visible;
 
 				var p1 = previewNodeView.TransformToVisual(this).Transform(new Point());
-				var p = new Point(p1.X + previewNodeView.CalculateIndent(item.Node) + 4.5, p1.Y - 3);
+				var p = new Point(p1.X + previewNodeView.CalculateIndent(item.Node) + 4.5, p1.Y - 3 - item.Padding.Top);
 
 				if (place == DropPlace.After)
-				{
-					p.Y += previewNodeView.ActualHeight;
-				}
+					p.Y += previewNodeView.ActualHeight + item.Padding.Top + item.Padding.Bottom;
 
 				_insertMarker.Margin = new Thickness(p.X, p.Y, 0, 0);
-
-				SharpTreeNodeView secondNodeView = null;
-				var index = _flattener.IndexOf(item.Node);
-
-				if (place == DropPlace.Before)
-				{
-					if (index > 0)
-					{
-						secondNodeView = (ItemContainerGenerator.ContainerFromIndex(index - 1) as SharpTreeViewItem).NodeView;
-					}
-				}
-				else if (index + 1 < _flattener.Count)
-				{
-					secondNodeView = (ItemContainerGenerator.ContainerFromIndex(index + 1) as SharpTreeViewItem).NodeView;
-				}
-
-				var w = p1.X + previewNodeView.ActualWidth - p.X;
-
-				if (secondNodeView != null)
-				{
-					var p2 = secondNodeView.TransformToVisual(this).Transform(new Point());
-					w = Math.Max(w, p2.X + secondNodeView.ActualWidth - p.X);
-				}
-
-				_insertMarker.Width = w + 10;
+				_insertMarker.Width = item.ActualWidth - p.X;
 			}
 		}
 
         private void HidePreview()
 		{
-			if (_previewTreeViewItem != null) {
+			if (_previewTreeViewItem != null)
+			{
 				_previewTreeViewItem.ClearValue(BackgroundProperty);
 				_previewTreeViewItem.ClearValue(ForegroundProperty);
 
-				if (_insertMarker != null) {
+				if (_insertMarker != null) 
+				{
 					_insertMarker.Visibility = Visibility.Collapsed;
 				}
 				_previewTreeViewItem = null;
